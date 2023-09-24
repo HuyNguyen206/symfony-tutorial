@@ -1,0 +1,30 @@
+{
+  "name": "symfony-tutorial",
+  "version": "1.0.0",
+  "description": "",
+  "main": "webpack.config.js",
+  "dependencies": {
+    "jquery": "^3.7.1"
+  },
+  "devDependencies": {
+    "@symfony/webpack-encore": "^4.4.0",
+    "webpack-notifier": "^1.15.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev-server": "encore dev-server",
+    "dev": "encore dev",
+    "watch": "encore dev --watch",
+    "build": "encore production --progress"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HuyNguyen206/symfony-tutorial.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HuyNguyen206/symfony-tutorial/issues"
+  },
+  "homepage": "https://github.com/HuyNguyen206/symfony-tutorial#readme"
+}
