@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\HasLifecycleCallbacks()]
+#[ORM\Table(name: 'users')]
 class User
 {
     #[ORM\Id]
@@ -19,12 +20,26 @@ class User
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Video::class)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Video::class, cascade: ['persist', 'remove'])]
     private Collection $videos;
+
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    private ?Address $address = null;
+
+    #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'followings')]
+    #[ORM\JoinColumn(name: 'user_id')]
+    #[ORM\InverseJoinColumn(name: 'follower_id')]
+    #[ORM\JoinTable(name: 'user_follow')]
+    private Collection $followers;
+
+    #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'followers')]
+    private Collection $followings;
 
     public function __construct()
     {
         $this->videos = new ArrayCollection();
+        $this->followers = new ArrayCollection();
+        $this->followings = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -81,6 +96,69 @@ class User
             if ($video->getUser() === $this) {
                 $video->setUser(null);
             }
+        }
+
+        return $this;
+    }
+
+    public function getAddress(): ?Address
+    {
+        return $this->address;
+    }
+
+    public function setAddress(?Address $address): static
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getFollowers(): Collection
+    {
+        return $this->followers;
+    }
+
+    public function addFollower(self $follower): static
+    {
+        if (!$this->followers->contains($follower)) {
+            $this->followers->add($follower);
+        }
+
+        return $this;
+    }
+
+    public function removeFollower(self $follower): static
+    {
+        $this->followers->removeElement($follower);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getFollowing(): Collection
+    {
+        return $this->followings;
+    }
+
+    public function addFollowing(self $following): static
+    {
+        if (!$this->followings->contains($following)) {
+            $this->followings->add($following);
+            $following->addFollower($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFollowing(self $following): static
+    {
+        if ($this->followings->removeElement($following)) {
+            $following->removeFollower($this);
         }
 
         return $this;

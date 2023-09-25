@@ -49,18 +49,35 @@ class AppController extends AbstractController
 //        dd($request->cookies->get('PHPSESSID'));
 //        dd( $gift->tEST6());
 //        dd($test->GETaNOTHER());
-//        $users = $entityManager->getRepository(User::class)->findAll();
-        $user = new User();
-        $user->setName($name);
-        foreach (range(1, 5) as $i) {
-            $video = new Video();
-            $video->setTitle("new video $i");
-            $user->addVideo($video);
-            $entityManager->persist($video);
-          }
+//        $query = $entityManager->createQuery('SELECT u, fings as followings_count, fers as followers_count FROM App\Entity\User u JOIN u.followings fings JOIN u.followers fers where u.id = :id ');
+//        dd($query->setParameter('id', 1)->getResult());
+        dd($entityManager->getRepository(User::class)->get(1));
 
-        $entityManager->persist($user);
-        $entityManager->flush();
+//        $ids = $query->getResult(); // array of CmsUser ids
+//        $users = $entityManager->getRepository(User::class)->findAll();
+//        $user1 = $entityManager->getRepository(User::class)->find(1);
+//        dd($user1->getFollowers()->count(), $user1->getFollowing()->count());
+//        $user2 = $entityManager->getRepository(User::class)->find(2);
+//        $user3 = $entityManager->getRepository(User::class)->find(3);
+//        $user4 = $entityManager->getRepository(User::class)->find(4);
+//        $user5 = $entityManager->getRepository(User::class)->find(5);
+//
+//        $user1->addFollower($user2);
+//        $user1->addFollower($user3);
+//
+//        $user1->addFollowing($user5);
+////
+//        $entityManager->flush();
+//        $user->setName($name);
+//        foreach (range(1, 5) as $i) {
+//            $video = new Video();
+//            $video->setTitle("new video $i");
+//            $user->addVideo($video);
+////            $entityManager->persist($video);
+//          }
+//
+//        $entityManager->persist($user);
+//        $entityManager->flush();
 
         dd($entityManager->getRepository(User::class)->findAll());
 
