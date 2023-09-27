@@ -19,7 +19,7 @@ class Author
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\OneToMany(mappedBy: 'author', targetEntity: File::class)]
+    #[ORM\OneToMany(mappedBy: 'author', targetEntity: File::class, cascade: ['persist'])]
     private Collection $files;
 
     public function __construct()

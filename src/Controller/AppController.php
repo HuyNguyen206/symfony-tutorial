@@ -2,22 +2,33 @@
 
 namespace App\Controller;
 
+use App\Entity\Author;
 use App\Entity\User;
 use App\Entity\Video;
+use App\Event\VideoCreatedEvent;
+use App\Form\AuthorFormType;
 use App\Service\Gift;
+use App\Service\Interface\UploadInterface;
 use App\Service\Test;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
 class AppController extends AbstractController
 {
-    public function __construct($logger)
+    public function __construct($logger, private EventDispatcherInterface $dispatcher)
     {
 
     }
@@ -31,8 +42,49 @@ class AppController extends AbstractController
      Gift $gift,
      Test $test,
      Request $request,
-    SessionInterface $session): Response
+    SessionInterface $session,
+    UploadInterface $upload,
+    TagAwareCacheInterface $adapter,
+        MailerInterface $mailer): Response
     {
+        $email = (new Email())
+            ->from('hello@example.com')
+            ->to('you@example.com')
+            //->cc('cc@example.com')
+            //->bcc('bcc@example.com')
+            //->replyTo('fabien@example.com')
+            //->priority(Email::PRIORITY_HIGH)
+            ->subject('Time for Symfony Mailer!')
+            ->text('Sending emails is fun again!')
+            ->html('<p>See Twig integration for better HTML integration!</p>');
+
+        $mailer->send($email);
+
+        $author = new Author();
+        $author->setName('ben');
+        $authorForm = $this->createForm(AuthorFormType::class, $author);
+        $authorForm->handleRequest($request);
+
+        if ($authorForm->isSubmitted() && $authorForm->isValid()) {
+            dump($authorForm->getData(), 'submit already');
+        }
+//        $video = $entityManager->getRepository(Video::class)->find(19);
+//        $this->dispatcher->dispatch(new VideoCreatedEvent($video), 'video.created.event');
+//
+////        $adapter = new FilesystemAdapter();
+//        $users = $adapter->get('users', function (ItemInterface $item) use($entityManager) {
+//            $item->tag(['user', 'bar']);
+//            dump('connected to database');
+////           $item->expiresAfter(10);
+//           return $entityManager->getRepository(User::class)->findAll();
+//        });
+//        $adapter->invalidateTags(['user']);
+//        $user = new User();
+//        $user->setName('ashley');
+//        $entityManager->persist($user);
+//        $entityManager->flush();
+//        return new Response();
+//        dump($container->get('app.second_service'));
 //        dd($user);
 //        $users = $entityManager->getRepository(User::class)->fin;
 //        $entityManager->getRepository(User::class)->createQueryBuilder()
@@ -51,7 +103,7 @@ class AppController extends AbstractController
 //        dd($test->GETaNOTHER());
 //        $query = $entityManager->createQuery('SELECT u, fings as followings_count, fers as followers_count FROM App\Entity\User u JOIN u.followings fings JOIN u.followers fers where u.id = :id ');
 //        dd($query->setParameter('id', 1)->getResult());
-        dd($entityManager->getRepository(User::class)->get(1));
+//        dd($entityManager->getRepository(User::class)->get(1));
 
 //        $ids = $query->getResult(); // array of CmsUser ids
 //        $users = $entityManager->getRepository(User::class)->findAll();
@@ -79,12 +131,13 @@ class AppController extends AbstractController
 //        $entityManager->persist($user);
 //        $entityManager->flush();
 
-        dd($entityManager->getRepository(User::class)->findAll());
-
+//        dd($entityManager->getRepository(User::class)->findAll());
+        $users = $entityManager->getRepository(User::class)->findAll();
         return $this->render('app/index.html.twig', [
             'controller_name' => 'AppController',
             'name' => $name,
-            'users' => [$user],
+            'users' => $users,
+            'form' => $authorForm->createView()
         ]);
     }
 
@@ -115,7 +168,7 @@ class AppController extends AbstractController
         name: 'about_us'
 
     )]
-    public function __myFunction() {
+    public function myFunction() {
         return new Response("Translated route");
 
     }

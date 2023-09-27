@@ -3,9 +3,11 @@
 namespace App\Entity;
 
 use App\Repository\VideoRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: VideoRepository::class)]
+#[ORM\Table(name: 'videos')]
 class Video extends File
 {
     #[ORM\Column(length: 255)]
@@ -21,6 +23,9 @@ class Video extends File
 
     #[ORM\Column]
     private ?int $duration = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $created_at = null;
 
     public function getTitle(): ?string
     {
@@ -66,6 +71,18 @@ class Video extends File
     public function setDuration(int $duration): static
     {
         $this->duration = $duration;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->created_at;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $created_at): static
+    {
+        $this->created_at = $created_at;
 
         return $this;
     }

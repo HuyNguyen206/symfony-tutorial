@@ -1,0 +1,5 @@
+imports:
+    - { resource: services.yaml }
+
+services:
+    App\Service\Interface\UploadInterface: '@App\Service\S3UploadService'

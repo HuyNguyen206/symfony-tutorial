@@ -3,20 +3,23 @@
 namespace App\Service;
 
 use Psr\Log\LoggerInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 
 class Gift
 {
+    public $optionService, $logger, $my;
     public array $gifts = ['pc', 'vga', 'laptop'];
-    public function __construct(LoggerInterface $logger, public Detail $detail)
+    public function __construct(LoggerInterface $logger, public Detail $detail, string $paramService, string $adminEmail)
     {
         $logger->info('gift were random');
 
         shuffle($this->gifts);
     }
 
-    public function Test6()
+    #[Required]
+    public function getSecondService(SecondService $secondService)
     {
-        dd(31);
+        $this->optionService = $secondService;
     }
 
 }
