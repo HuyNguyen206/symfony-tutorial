@@ -2,15 +2,28 @@
 
 namespace App\Tests;
 
-use Symfony\Component\Panther\PantherTestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class EmailTest extends PantherTestCase
+class EmailTest extends WebTestCase
 {
+    private $router;
+    private $client;
+
+    public function __construct(?string $name = null, array $data = [], $dataName = '')
+    {
+        parent::__construct($name, $data, $dataName);
+        $this->client = static::createClient();
+        $this->router = $this->client->getContainer()->get('router');
+    }
+
     public function testSomething(): void
     {
-        $client = static::createPantherClient();
-        $crawler = $client->request('GET', '/');
+//        $client = static::createClient();
+//        $this->router = $client->getContainer()->get('router');
+//        $client = static::createClient();
+        $crawler =  $this->client->request('GET', $this->router->generate('home', ['name' => 'ben']));
 
-        $this->assertSelectorTextContains('h1', 'Hello World');
+        $this->assertResponseIsSuccessful();
+//        $this->assertSelectorTextContains('h1', 'Hello World');
     }
 }

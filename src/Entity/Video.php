@@ -27,6 +27,9 @@ class Video extends File
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $created_at = null;
 
+    #[ORM\ManyToOne(inversedBy: 'videos')]
+    private ?SecurityUser $securityUser = null;
+
     public function getTitle(): ?string
     {
         return $this->title;
@@ -83,6 +86,18 @@ class Video extends File
     public function setCreatedAt(\DateTimeInterface $created_at): static
     {
         $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    public function getSecurityUser(): ?SecurityUser
+    {
+        return $this->securityUser;
+    }
+
+    public function setSecurityUser(?SecurityUser $securityUser): static
+    {
+        $this->securityUser = $securityUser;
 
         return $this;
     }
