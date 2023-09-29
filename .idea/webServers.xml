@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="7d99209b-967f-49d7-bd48-5abce3251a6f" name="IloveArtBastion">
+        <fileTransfer accessType="SFTP" host="175.45.193.105" port="22" sshConfigId="227cb3ed-2e7d-4f22-b921-c4508e84e99c" sshConfig="IloveArtBastion">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
